@@ -100,7 +100,8 @@ KaTeX 的 JS/CSS/字体自建于 `static/katex/`，不依赖外部 CDN，任何�
 │   └── search.md                搜索页
 ├── archetypes/                  新建内容的模板
 │   └── post.md                  文章模板
-├── assets/                      自定义资源（当前为空）
+├── assets/                      自定义资源
+│   └── css/extended/custom.css  自定义样式（自动打包进主题样式）
 ├── layouts/                     覆盖主题模板用（当前为空）
 ├── static/                      原样拷贝的静态文件（favicon、头像）
 │   └── katex/                   KaTeX 数学公式资源
@@ -136,6 +137,21 @@ KaTeX 的 JS/CSS/字体自建于 `static/katex/`，不依赖外部 CDN，任何�
 | `params.socialIcons` | 社交链接 |
 | `menu.main` | 导航栏 |
 | `markup.highlight.style` | 代码高亮配色 |
+
+### 宽屏目录侧栏
+
+正文列固定 720px 居中，在宽屏上两侧会留出大片空白。`assets/css/extended/custom.css` 里用一段媒体查询，把目录从「正文顶部折叠块」改为**固定在正文右侧常驻显示**，只在视口 ≥ 1320px 时生效；窄屏自动回退成主题原本的折叠样式。
+
+纯 CSS 实现，没有覆盖主题模板，主题升级不会冲突。开关由文章 front matter 的 `showToc` 控制（未设置时为 `false`）：
+
+```yaml
+---
+title: "文章标题"
+showToc: true
+---
+```
+
+> 侧栏的水平位置由 `left: calc(50% + 384px + 32px)` 决定，其中 `384px` 是正文列宽度 768px 的一半。**若修改 `--main-width`，这个值必须同步改**，否则侧栏会与正文重叠或错位，且不会有任何报错。
 
 ## 部署
 

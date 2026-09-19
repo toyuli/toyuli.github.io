@@ -1,0 +1,109 @@
+/* =============================================================================
+   文章页目录：宽屏下固定到正文右侧的空白区
+   -----------------------------------------------------------------------------
+   PaperMod 默认把目录渲染成正文顶部一个折叠的 <details>。宽屏下正文列只有
+   768px 居中，两侧留出大片空白，而目录折叠着既占位又帮不上阅读。
+
+   这里在视口足够宽时把它移出文档流，固定到正文右侧常驻显示。
+   纯 CSS 实现，不覆盖主题模板 —— 主题升级不会冲突。
+
+   几何推算：.main 宽 720px + 两侧 padding 24px = 768px，水平居中，
+   故其右边缘位于 50% + 384px。目录宽 220px、间距 32px，
+   需要 50vw ≥ 384 + 32 + 220 = 636px，即视口 ≥ 1272px。取 1320px 留余量。
+
+   选择器统一带 .main 前缀：主题在暗色模式下用
+   [data-theme="dark"] details.toc（特异性 0,2,1）单独设背景，
+   只有 .main .post-single .toc（0,3,0）能压住它。
+   ========================================================================== */
+
+@media (min-width: 1320px) {
+    .main .post-single .toc {
+        position: fixed;
+        top: calc(var(--header-height) + 28px);
+        left: calc(50% + 384px + 32px);
+        width: 220px;
+        max-height: calc(100vh - var(--header-height) - 80px);
+        overflow-y: auto;
+
+        /* 去掉主题默认的卡片外观，保持极简 */
+        margin: 0;
+        padding: 0;
+        background: none;
+        border: none;
+        border-radius: 0;
+
+        font-size: 13px;
+        line-height: 1.5;
+
+        /* 目录过长时内部滚动，但不显示滚动条 */
+        scrollbar-width: none;
+    }
+
+    .main .post-single .toc::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* 侧栏常驻展开，折叠交互失去意义：把标题栏降级为静态标签。
+       复用主题的 i18n 文案（toc.html 里的 {{ i18n "toc" }}），
+       避免在 CSS 里硬编码中文字符串。
+       pointer-events: none 让点击不再触发 toggle（虽然 toggle 后视觉也无变化）。 */
+    .main .post-single .toc > summary {
+        display: block;
+        cursor: default;
+        pointer-events: none;
+        list-style: none;
+
+        padding: 0 0 8px 12px;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        color: var(--secondary);
+    }
+
+    .main .post-single .toc > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    /* 主题靠 details[open] 切换 ::details-content 的 height/opacity 来实现
+       折叠动画；侧栏不需要折叠交互，直接覆盖为始终可见 */
+    .main .post-single .toc::details-content {
+        height: auto;
+        opacity: 1;
+        overflow: visible;
+        content-visibility: visible;
+        transition: none;
+    }
+
+    /* 主题给 details .inner 设了 margin: 0 2.4rem，侧栏里要去掉 */
+    .main .post-single .toc .inner {
+        margin: 0;
+        padding-bottom: 0;
+    }
+
+    /* Hugo 生成的 .TableOfContents 结构：nav > ul > li > a */
+    .main .post-single .toc .inner ul {
+        margin: 0;
+        padding-inline-start: 0;
+        list-style: none;
+    }
+
+    /* 嵌套层级缩进收窄，避免窄侧栏里层级过深 */
+    .main .post-single .toc .inner li ul {
+        margin-inline-start: 12px;
+    }
+
+    .main .post-single .toc .inner a {
+        display: block;
+        padding: 3px 0 3px 12px;
+        color: var(--secondary);
+        border-inline-start: 2px solid var(--border);
+        text-decoration: none;
+        transition: color 150ms ease, border-color 150ms ease;
+    }
+
+    .main .post-single .toc .inner a:hover {
+        color: var(--primary);
+        border-inline-start-color: var(--primary);
+        text-decoration: none;
+    }
+}

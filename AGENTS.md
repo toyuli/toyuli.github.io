@@ -38,6 +38,14 @@ Hugo 静态博客 + PaperMod 主题。推送到 `main` 即由 GitHub Actions 构
 
 `static/katex/` 是 vendored 的第三方资源（KaTeX 0.18.4，MIT 协议），**不要手工编辑**。升级时重新下载发行包整体替换，并同步更新其中的 LICENSE。
 
+### 7. 自定义 CSS 与主题变量的耦合
+
+`assets/css/extended/custom.css` 把文章目录固定到正文右侧，水平位置写死为 `calc(50% + 384px + 32px)`。其中 `384px` 是正文列宽 768px 的一半（`--main-width: 720px` 加两侧 `--gap: 24px`）。
+
+**若修改 `--main-width` 或 `--gap`，这个 calc 必须同步改**，否则侧栏会与正文重叠或错位，且不会报错。
+
+该文件的宽屏规则统一带 `.main` 前缀，是为了压过主题在暗色模式下的 `[data-theme="dark"] details.toc`（特异性 `0,2,1`）。**去掉前缀会让目录在暗色模式下残留卡片背景。**
+
 ## 验证
 
 提交前必须构建通过，命令与 CI 保持一致：
