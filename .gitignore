@@ -1,0 +1,16 @@
+# Hugo build output — GitHub Actions builds and deploys this, never commit it
+public/
+
+# Hugo's generated asset cache
+resources/_gen/
+
+# Hugo's build lock file
+.hugo_build.lock
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
