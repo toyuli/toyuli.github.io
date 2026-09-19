@@ -92,6 +92,19 @@ menu:
 # PaperMod ships chroma-styles.css, so emit class-based highlight markup.
 pygmentsUseClasses: true
 markup:
+  # Preserve LaTeX delimiters through Markdown rendering so KaTeX can pick
+  # them up client-side. The delimiters here MUST match those configured in
+  # layouts/_partials/extend_head.html.
+  #
+  # Inline math uses \(...\) rather than $...$ on purpose: KaTeX mis-handles a
+  # lone "$" outside math contexts (e.g. prices, shell prompts).
+  goldmark:
+    extensions:
+      passthrough:
+        enable: true
+        delimiters:
+          block: [['\[', '\]'], ['$$', '$$']]
+          inline: [['\(', '\)']]
   highlight:
     noClasses: false
     codeFences: true

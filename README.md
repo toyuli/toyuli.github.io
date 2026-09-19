@@ -63,6 +63,31 @@ hugo new content posts/my-new-post.md
 
 多图文章建议使用**页面包**：建 `content/posts/文章名/index.md`，图片放在同一目录，用相对路径引用。这样文章与资源在一起，删除文章时不会留下孤立文件。
 
+### 数学公式
+
+支持 LaTeX 语法，由 [KaTeX](https://katex.org/) 在浏览器端渲染：
+
+```markdown
+行内公式 \(a^2 + b^2 = c^2\)，以及 \(O(n \log n)\)。
+
+块级公式：
+
+$$
+\frac{\partial L}{\partial \theta} = \sum_{i=1}^{N} \nabla_\theta \ell(x_i, y_i)
+$$
+```
+
+| 分隔符 | 用途 |
+|---|---|
+| `\(...\)` | 行内 |
+| `$$...$$` 或 `\[...\]` | 独立成行（display 模式） |
+
+> **行内公式请用 `\(...\)` 而不是 `$...$`。** KaTeX 对 `$` 有已知限制：正文里出现单独的 `$`（价格、shell 提示符）会被误判为公式边界。若确实要用 `$...$`，需同时修改 `hugo.yaml` 的 `passthrough.delimiters` 和 `layouts/_partials/extend_head.html` 里的 `delimiters`，**两处必须一致**，否则公式不渲染且不报错。
+
+KaTeX 的 JS/CSS/字体自建于 `static/katex/`，不依赖外部 CDN，任何网络环境都能加载。只有页面确实包含公式时才会引入这些资源，普通页面不受影响。
+
+> **公式较多的文章建议显式设置 `description`。** 不设的话，页面的 meta 描述会回退到正文摘要，分享到社交平台时预览文字里会露出 `$$...$$` 原始 LaTeX。虽然页面本身不受影响，但观感不好。
+
 ## 目录结构
 
 ```
@@ -77,7 +102,8 @@ hugo new content posts/my-new-post.md
 │   └── post.md                  文章模板
 ├── assets/                      自定义资源（当前为空）
 ├── layouts/                     覆盖主题模板用（当前为空）
-├── static/                      原样拷贝的静态文件（当前为空）
+├── static/                      原样拷贝的静态文件（favicon、头像）
+│   └── katex/                   KaTeX 数学公式资源
 ├── themes/PaperMod/             主题，git submodule
 └── .github/workflows/hugo.yaml  CI 配置
 ```

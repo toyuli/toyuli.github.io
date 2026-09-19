@@ -32,6 +32,12 @@ Hugo 静态博客 + PaperMod 主题。推送到 `main` 即由 GitHub Actions 构
 
 分页用 `pagination.pagerSize`，不要用已废弃的 `paginate`。
 
+### 6. 数学公式的分隔符配置在两处，必须同步
+
+`hugo.yaml` 的 `markup.goldmark.extensions.passthrough.delimiters` 与 `layouts/_partials/extend_head.html` 里的 `delimiters` 是同一套约定的两个副本。**只改一处会导致公式静默不渲染**——不报错、不警告，只是页面上原样显示 LaTeX 源码。改动前先确认两处一致。
+
+`static/katex/` 是 vendored 的第三方资源（KaTeX 0.18.4，MIT 协议），**不要手工编辑**。升级时重新下载发行包整体替换，并同步更新其中的 LICENSE。
+
 ## 验证
 
 提交前必须构建通过，命令与 CI 保持一致：

@@ -1,0 +1,38 @@
+{{- /*
+  KaTeX 数学公式（自建，资源见 static/katex/）
+  ---------------------------------------------------------------
+  加载策略：只有页面确实包含公式时才注入资源，避免每页白白多加载 300KB。
+
+  判定顺序：
+    1. front matter 显式写了 math: true / false  -> 以它为准
+    2. 没写                                      -> 扫描正文里的公式分隔符
+
+  这里的 delimiters 必须与 hugo.yaml 中
+  markup.goldmark.extensions.passthrough.delimiters 保持一致。
+*/ -}}
+
+{{- $math := .Param "math" -}}
+{{- if not (isset .Params "math") -}}
+  {{- $math = and .IsPage (findRE `\$\$|\\\(|\\\[` .RawContent 1) -}}
+{{- end -}}
+
+{{- if $math }}
+<link rel="stylesheet" href="{{ "katex/katex.min.css" | relURL }}">
+
+{{- /* defer 保证两个脚本按序执行，且在 DOMContentLoaded 之前完成 */}}
+<script defer src="{{ "katex/katex.min.js" | relURL }}"></script>
+<script defer src="{{ "katex/auto-render.min.js" | relURL }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+        delimiters: [
+            { left: "$$",  right: "$$",  display: true  },
+            { left: "\\[", right: "\\]", display: true  },
+            { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+    });
+});
+</script>
+{{- end -}}
