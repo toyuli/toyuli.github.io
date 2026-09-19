@@ -46,6 +46,26 @@ Hugo 静态博客 + PaperMod 主题。推送到 `main` 即由 GitHub Actions 构
 
 该文件的宽屏规则统一带 `.main` 前缀，是为了压过主题在暗色模式下的 `[data-theme="dark"] details.toc`（特异性 `0,2,1`）。**去掉前缀会让目录在暗色模式下残留卡片背景。**
 
+### 8. 字体栈与打包路径的耦合
+
+字体栈在 `assets/css/extended/fonts.css`，字体文件自托管在 `static/fonts/`（均为 SIL OFL 1.1）。Inter 取 Fontsource 的 latin 子集，JetBrains Mono 用上游的完整字体。
+
+`@font-face` 的 `src` 用绝对路径 `/fonts/...`：该文件会被打包进 `/assets/css/stylesheet.<hash>.css`，在那里相对路径解析不到 `static/`。**前提是站点部署在域名根目录**（`hugo.yaml` 的 `baseURL` 已是该形态）。若将来移到子路径，这里必须同步改——否则字体静默不加载，不报错，只是回退到系统字体。
+
+Inter 的 `unicode-range` 只声明 latin 码位，这是中文不下载 webfont 的关键：中文字符在匹配阶段就跳过 webfont。**不要为了「中英文统一」给中文引入 webfont**——CJK 子集几 MB 起，与这个站点的体积取向冲突。
+
+**JetBrains Mono 不能加 `unicode-range`**，必须让它在代码块里接管所有能渲染的字符。它若被限制成 latin 子集，制表符（`├──` `│`）和箭头（`→`）会回退到 Consolas，而两者步进不同（0.55em vs 0.6em），同一行代码里混两种步进会让树形图和 ASCII art 错位——不报错，只是画出来是歪的。同理，**不要为了让体积好看把它换回子集版本**。
+
+`woff2` 是第三方资源，**不要手工编辑**；升级时重新下载整体替换，并同步更新同目录下的 `LICENSE-*.txt`。
+
+### 9. 行高覆盖与显式值的继承陷阱
+
+正文行高调在 `assets/css/extended/typography.css`（`body` 设 1.7）。
+
+主题里凡是**显式写了行高**的地方都不会继承 `body`，改 `body` 时容易漏。已知需要同步的只有 `.entry-content`（列表页摘要，主题里是 1.6），typography.css 里已覆盖。标题、导航、页脚、代码块各自都有显式行高，属于刻意保留，不要顺手「统一」。
+
+**新增任何使用中文正文的组件时，先确认它有没有自己的行高**——漏掉不会报错，只是那一处的行距比别处紧一档。
+
 ## 验证
 
 提交前必须构建通过，命令与 CI 保持一致：

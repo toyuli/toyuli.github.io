@@ -101,9 +101,15 @@ KaTeX 的 JS/CSS/字体自建于 `static/katex/`，不依赖外部 CDN，任何�
 ├── archetypes/                  新建内容的模板
 │   └── post.md                  文章模板
 ├── assets/                      自定义资源
-│   └── css/extended/custom.css  自定义样式（自动打包进主题样式）
-├── layouts/                     覆盖主题模板用（当前为空）
+│   └── css/extended/            自定义样式（自动打包进主题样式）
+│       ├── custom.css           宽屏目录侧栏
+│       ├── fonts.css            字体
+│       └── typography.css       正文行高
+├── layouts/                     覆盖主题模板用
+│   └── _partials/
+│       └── extend_head.html     KaTeX 资源注入
 ├── static/                      原样拷贝的静态文件（favicon、头像）
+│   ├── fonts/                   自托管的字体文件
 │   └── katex/                   KaTeX 数学公式资源
 ├── themes/PaperMod/             主题，git submodule
 └── .github/workflows/hugo.yaml  CI 配置
@@ -120,6 +126,7 @@ KaTeX 的 JS/CSS/字体自建于 `static/katex/`，不依赖外部 CDN，任何�
 | 想做什么 | 建立哪个文件 |
 |---|---|
 | 自定义 CSS | `assets/css/extended/custom.css`（自动打包，无需手动引入） |
+| 换字体 | `assets/css/extended/fonts.css` + `static/fonts/` |
 | 换 favicon | `static/favicon.ico` |
 | 加评论 | `layouts/_partials/comments.html` |
 | 注入统计脚本 | `layouts/_partials/extend_footer.html` |
@@ -152,6 +159,36 @@ showToc: true
 ```
 
 > 侧栏的水平位置由 `left: calc(50% + 384px + 32px)` 决定，其中 `384px` 是正文列宽度 768px 的一半。**若修改 `--main-width`，这个值必须同步改**，否则侧栏会与正文重叠或错位，且不会有任何报错。
+
+### 字体
+
+西文用自托管的 [Inter](https://rsms.me/inter/)，代码块用自托管的 [JetBrains Mono](https://www.jetbrains.com/lp/mono/)，中文交给系统字体。Inter 取 latin 子集（48KB），JetBrains Mono 用完整字体（111KB），合计约 160KB，且只在页面确实用到时才下载。
+
+**中文刻意不下载 webfont。** 整套 CJK 子集动辄几 MB，对博客来说加载成本远超收益，而系统自带的苹方 / 微软雅黑 / 思源黑体质量够用、还会随系统升级。西文用 webfont、中文用系统字体，是中文站点最普遍的做法。
+
+主题原本的字体栈清一色是西文字体，中文只能靠浏览器逐字回退，跨设备观感不可控。`fonts.css` 把所有中文字体按平台列全，把「哪台设备用哪个字体」从浏览器的猜测变成确定的声明：
+
+```css
+--font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif;
+```
+
+Inter 的 `@font-face` 用 `unicode-range` 只声明 latin 码位——中文字符在字体匹配阶段就跳过 webfont，既不触发下载，也不会渲染成豆腐块。
+
+**JetBrains Mono 则刻意不写 `unicode-range`。** 等宽字体有一条正文没有的硬约束：同一段代码块里每个字符必须走同样的步进。latin 子集不含制表符（`├──`、`│`）和箭头（`→`）这类画树形图要用的字符，它们会回退到 Consolas——而 Consolas 步进 0.55em、JetBrains Mono 是 0.6em，两者混在同一行，树形图的竖线就会错开。不写 range 等于「这个字体负责它能渲染的一切，渲染不了的再逐字回退」，正是等宽场景需要的语义。完整字体比子集大 71KB，换来的就是网格一致。
+
+换字体要同时改两处：字体栈在 `assets/css/extended/fonts.css`，字体文件在 `static/fonts/`。替换文件时同步更新同目录下的 `LICENSE-*.txt`（Inter 与 JetBrains Mono 均为 [SIL OFL 1.1](https://openfontlicense.org)）。Inter 子集取自 [Fontsource](https://fontsource.org/)，JetBrains Mono 完整版取自[上游仓库](https://github.com/JetBrains/JetBrainsMono)的 `fonts/webfonts/`。
+
+> `@font-face` 用的是绝对路径 `/fonts/...`。本文件会被打包进 `/assets/css/stylesheet.<hash>.css`，相对路径在那里对不上；绝对路径的前提是站点部署在域名根目录，也就是 `hugo.yaml` 里 `baseURL` 的形态。
+
+### 正文行高
+
+主题给 `body` 设的是 `line-height: 1.6`，那是按西文调的。中文是方块字，字面率高、笔画密，同样的行高下视觉上更拥塞，中文正文的常见取值是 1.7–1.8。正文本就以中文为主，`typography.css` 里取 1.7。
+
+改的是 `body` 而不是 `.post-content`，因为列表页、归档页、关于页的中文都要照顾到，逐个列选择器只会漏。两处不受影响，都是主题里更具体的声明：标题（`h1–h6` 单独设了 1.2）、导航与页脚（各自写死了行高）。代码块也不受影响——`.post-content code` 有显式的 1.5，实测改动前后代码块高度与行距完全一致。
+
+**唯一需要单独覆盖的是 `.entry-content`**（列表页摘要）：它在主题里显式写了 1.6，显式值不会继承 `body`，漏掉它会让首页摘要比正文紧一档，且不会有任何报错。
 
 ## 部署
 
