@@ -16,8 +16,6 @@ caches:
 outputs:
   home:
     - HTML
-    - RSS
-    - JSON
 
 params:
   env: production
@@ -44,8 +42,6 @@ params:
   socialIcons:
     - name: github
       url: "https://github.com/toyuli"
-    - name: rss
-      url: "index.xml"
 
 menu:
   main:
