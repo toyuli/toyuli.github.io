@@ -1,6 +1,6 @@
 baseURL: "https://toyuli.github.io/"
 locale: zh-cn
-defaultContentLanguage: zh
+defaultLanguage: zh
 title: "Toyuli"
 theme: ["PaperMod"]
 
@@ -9,16 +9,10 @@ buildDrafts: false
 buildFuture: false
 buildExpired: false
 
-pagination:
-  pagerSize: 5
-
-# Required by the official GitHub Pages workflow so that the image cache
-# can be persisted between CI runs.
 caches:
   images:
     dir: ':cacheDir/images'
 
-# PaperMod's search feature reads index.json, which requires the JSON output.
 outputs:
   home:
     - HTML
@@ -28,37 +22,24 @@ outputs:
 params:
   env: production
   title: "Toyuli"
-  description: "技术笔记与阅读记录"
-  keywords: [Blog, Tech, Notes]
+  description: ""
   author: "toyuli"
   DateFormat: "2006-01-02"
   defaultTheme: auto
   disableThemeToggle: false
 
-  ShowReadingTime: true
-  ShowShareButtons: true
-  ShowPostNavLinks: true
-  ShowBreadCrumbs: true
   ShowCodeCopyButtons: true
-  ShowWordCount: true
-  ShowRssButtonInSectionTermList: true
   UseHugoToc: true
-  disableSpecial1stPost: false
-  disableScrollToTop: false
   comments: false
-  hidemeta: false
-  hideSummary: false
   showtoc: false
   tocopen: false
 
-  # Without this, PaperMod guesses the home page section from whichever
-  # section happens to hold the most pages.
   mainSections:
     - posts
 
   homeInfoParams:
-    Title: "你好"
-    Content: "这里记录技术笔记和阅读过程中的一些想法。"
+    Title: "Toyuli"
+    Content: ""
 
   socialIcons:
     - name: github
@@ -72,32 +53,13 @@ menu:
       name: 文章
       url: /posts/
       weight: 10
-    - identifier: tags
-      name: 标签
-      url: /tags/
-      weight: 20
-    - identifier: archives
-      name: 归档
-      url: /archives/
-      weight: 30
-    - identifier: search
-      name: 搜索
-      url: /search/
-      weight: 40
     - identifier: about
       name: 关于
       url: /about/
       weight: 50
 
-# PaperMod ships chroma-styles.css, so emit class-based highlight markup.
 pygmentsUseClasses: true
 markup:
-  # Preserve LaTeX delimiters through Markdown rendering so KaTeX can pick
-  # them up client-side. The delimiters here MUST match those configured in
-  # layouts/_partials/extend_head.html.
-  #
-  # Inline math uses \(...\) rather than $...$ on purpose: KaTeX mis-handles a
-  # lone "$" outside math contexts (e.g. prices, shell prompts).
   goldmark:
     extensions:
       passthrough:
