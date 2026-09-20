@@ -33,7 +33,8 @@ params:
   tocopen: false
 
   mainSections:
-    - posts
+    - triton
+    - mlir
 
   homeInfoParams:
     Title: "Toyuli"
@@ -45,10 +46,14 @@ params:
 
 menu:
   main:
-    - identifier: posts
-      name: 文章
-      url: /posts/
+    - identifier: triton
+      name: Triton
+      url: /triton/
       weight: 10
+    - identifier: mlir
+      name: MLIR
+      url: /mlir/
+      weight: 20
     - identifier: about
       name: 关于
       url: /about/
