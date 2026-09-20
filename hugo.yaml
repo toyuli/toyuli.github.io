@@ -46,14 +46,10 @@ params:
 
 menu:
   main:
-    - identifier: triton
-      name: Triton
-      url: /triton/
+    - identifier: notes
+      name: 笔记
+      url: /notes/
       weight: 10
-    - identifier: mlir
-      name: MLIR
-      url: /mlir/
-      weight: 20
     - identifier: about
       name: 关于
       url: /about/
