@@ -1,0 +1,54 @@
+/* =============================================================================
+   暖纸配色：米白底 + 陶土点缀
+   -----------------------------------------------------------------------------
+   覆盖主题 theme-vars.css 的颜色变量。亮色在 :root，暗色在
+   :root[data-theme="dark"]（与主题同选择器、同特异性，后打包者胜）。
+
+   --accent 是新增变量，主题不认识，只在本站 extended 样式里使用。
+
+   注意：beautify.css 里旧的 [data-theme="dark"] body 覆盖已删除——
+   body 上的变量会经继承压过 :root，导致这里调色在暗色下失效。
+   ========================================================================== */
+
+:root {
+    --theme: #faf7f2;
+    --entry: #fffdf9;
+    --primary: #2c2621;
+    --secondary: #8a8178;
+    --tertiary: #ddd5c8;
+    --content: #3a352e;
+    --code-block-bg: #2a2620;
+    --code-bg: #f0eae0;
+    --border: #e8e1d6;
+    --accent: #b35330;
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    --theme: #1a1714;
+    --entry: #24211d;
+    --primary: #e8e4de;
+    --secondary: #9a938a;
+    --tertiary: #3a3630;
+    --content: #cfc9c0;
+    --code-block-bg: #24211d;
+    --code-bg: #2a2620;
+    --border: #33302b;
+    --accent: #e0956e;
+    color-scheme: dark;
+}
+
+/* 列表页（首页/归档/搜索）主题默认用 --code-bg 做底，与文章页不一致；
+   统一回 --theme，页面底色干净一致。暗色下主题已有更高特异性的同效规则。 */
+.list {
+    background: var(--theme);
+}
+
+::selection {
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}

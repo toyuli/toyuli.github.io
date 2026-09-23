@@ -20,11 +20,14 @@ outputs:
 params:
   env: production
   title: "Toyuli"
-  description: ""
+  description: "Triton / MLIR 学习笔记"
   author: "toyuli"
   DateFormat: "2006-01-02"
   defaultTheme: auto
   disableThemeToggle: false
+
+  assets:
+    theme_color: "#faf7f2"
 
   ShowCodeCopyButtons: true
   UseHugoToc: true
@@ -38,7 +41,10 @@ params:
 
   homeInfoParams:
     Title: "Toyuli"
-    Content: ""
+    Content: |
+      Triton / MLIR 学习笔记。
+
+      [Triton](/triton/) · [MLIR](/mlir/)
 
   socialIcons:
     - name: github
@@ -50,6 +56,14 @@ menu:
       name: 笔记
       url: /notes/
       weight: 10
+    - identifier: archives
+      name: 归档
+      url: /archives/
+      weight: 20
+    - identifier: search
+      name: 搜索
+      url: /search/
+      weight: 30
     - identifier: about
       name: 关于
       url: /about/

@@ -1,54 +1,165 @@
 /* =============================================================================
-   极简美化：悬停、滚动条、代码语言、锚点、暗色模式
+   暖纸极简：导航、首页、卡片、正文、页脚、代码、微交互
+   -----------------------------------------------------------------------------
+   颜色一律走 palette.css 的变量（--accent 等），不写死色值。
+   与 custom.css 的分工不变：那边只管宽屏目录侧栏几何，互不重叠。
    ========================================================================== */
 
-/* --- 1. 文章卡片悬停微上浮 -------------------------------------------------- */
+/* --- 导航 ------------------------------------------------------------------ */
+
+.header {
+    border-bottom: 1px solid var(--border);
+}
+
+.logo a {
+    letter-spacing: -0.02em;
+}
+
+.menu a {
+    transition: color 150ms ease;
+}
+
+.menu a:hover {
+    color: var(--accent);
+}
+
+.menu .active {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+}
+
+/* --- 首页问候区 ------------------------------------------------------------ */
+
+.home-info {
+    padding-top: 12px;
+    padding-bottom: 8px;
+}
+
+.home-info .entry-header h1 {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.home-info .entry-content {
+    color: var(--secondary);
+    font-size: 1.05rem;
+    max-width: 36em;
+}
+
+.home-info .entry-content a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    transition: border-color 150ms ease;
+}
+
+.home-info .entry-content a:hover {
+    border-bottom-color: var(--accent);
+}
+
+.home-info .social-icons a {
+    color: var(--secondary);
+    transition: color 150ms ease;
+}
+
+.home-info .social-icons a:hover {
+    color: var(--accent);
+}
+
+/* --- 文章卡片 --------------------------------------------------------------
+   默认去边框，靠 --entry 底色与页面区分；悬停浮起并露出陶土描边。 */
+
 .post-entry {
-    transition: transform 0.2s ease;
-}
-.post-entry:hover {
-    transform: translateY(-1px);
+    border-color: transparent;
+    transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
-/* --- 2. 极细半透明滚动条 -------------------------------------------------- */
-::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+.post-entry:hover,
+.post-entry:focus-within {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
 }
-::-webkit-scrollbar-track {
-    background: transparent;
+
+.post-entry:hover .entry-header h2,
+.post-entry:focus-within .entry-header h2 {
+    color: var(--accent);
 }
-::-webkit-scrollbar-thumb {
+
+.entry-header h2 {
+    transition: color 150ms ease;
+}
+
+/* --- 正文 ------------------------------------------------------------------ */
+
+.md-content a:not(.anchor) {
+    color: var(--accent);
+    text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    transition: text-decoration-color 150ms ease;
+}
+
+.md-content a:not(.anchor):hover {
+    text-decoration-color: var(--accent);
+}
+
+.md-content blockquote {
+    background: var(--code-bg);
+    border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.md-content hr {
     background: var(--border);
-    border-radius: 3px;
-}
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
 }
 
-/* --- 3. 代码块语言标签 ---------------------------------------------------- */
+.md-content mark {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    color: inherit;
+}
+
+/* --- 页脚与回到顶部 -------------------------------------------------------- */
+
+.footer {
+    border-top: 1px solid var(--border);
+}
+
+.footer a:hover,
+.top-link:hover {
+    color: var(--accent);
+}
+
+.top-link {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+}
+
+/* --- 代码 ------------------------------------------------------------------ */
+
+/* 语言标签：左上角，避开主题右上角的复制按钮 */
 .highlight[data-lang] pre::before {
     content: attr(data-lang);
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     padding: 2px 6px;
     font-size: 11px;
     font-family: var(--font-mono);
     color: var(--secondary);
+    opacity: 0.7;
     pointer-events: none;
 }
+
 .highlight pre {
     position: relative;
 }
 
-/* --- 4. 标题锚点淡入 ------------------------------------------------------ */
+/* --- 标题锚点淡入 ---------------------------------------------------------- */
+
 .headerlink {
     opacity: 0;
     transition: opacity 0.2s ease;
     text-decoration: none !important;
 }
+
 h1:hover .headerlink,
 h2:hover .headerlink,
 h3:hover .headerlink,
@@ -57,12 +168,58 @@ h5:hover .headerlink,
 h6:hover .headerlink {
     opacity: 0.5;
 }
+
 .headerlink:hover {
     opacity: 1 !important;
 }
 
-/* --- 5. 暗色模式对比度微调 ------------------------------------------------ */
-[data-theme="dark"] body {
-    --border: #333;
-    --secondary: #999;
+/* --- 极细半透明滚动条 ------------------------------------------------------ */
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--tertiary);
+    border-radius: 3px;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--tertiary) transparent;
+}
+
+/* --- 分页与搜索的点缀色 ---------------------------------------------------- */
+
+.pagination a:hover {
+    background: var(--accent);
+}
+
+.searchbox input:focus {
+    border-color: var(--accent);
+}
+
+.searchResults li:hover,
+.searchResults li:focus-within {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* --- 归档 ------------------------------------------------------------------ */
+
+.archive-year:not(:last-of-type) {
+    border-bottom-color: var(--border);
+}
+
+/* --- 标签与分享 ------------------------------------------------------------ */
+
+.post-tags a:hover,
+.paginav a:hover {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    color: var(--primary);
 }
