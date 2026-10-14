@@ -15,7 +15,7 @@
     z-index: 50;
     border-bottom: 0;
     padding: 12px var(--gap);
-    background: color-mix(in srgb, var(--theme) 78%, transparent);
+    background: transparent;
     -webkit-backdrop-filter: blur(10px) saturate(1.1);
     backdrop-filter: blur(10px) saturate(1.1);
 }

@@ -1,45 +1,26 @@
 /* =============================================================================
-   首页暖色流光壁纸（纯 CSS，无 canvas / 无 JS）
+   首页暖色壁纸（纯 CSS，无 canvas / 无 JS）
    -----------------------------------------------------------------------------
    直接把多层径向渐变画在首页 body 的 background 上：
    天然位于所有内容之下，不可能遮挡文字；也避开了 palette.css 里
    .list{background:var(--theme)} 那层不透明底把 z-index:-1 伪元素盖住的问题。
 
-   仅作用于首页：body:has(.home-cards)——只有 layouts/index.html 产出 .home-cards。
-   壁纸是玻璃卡片"浮起来"的前提：没有它，白卡叠白底就没有层次。
+   关键：色团用 `at X% Y%` 锚点铺开、尺寸给到 90~120vmax，
+   让整屏都被颜色覆盖（含卡片所在的中间区域），而不是只堆在四角留出白心。
+
+   选择器用 body.list:has(.home-cards)（特异性 0,2,1）：既要只在首页生效
+   （只有 layouts/index.html 产出 .home-cards），又要压过主题的
+   `[data-theme="dark"] .list{background:...}`（0,2,0）——那个 `background`
+   简写会把 background-image 重置为 none，否则暗色下壁纸不显示。
    ========================================================================== */
 
-body:has(.home-cards) {
+body.list:has(.home-cards) {
     background-color: var(--theme);
     background-image:
-        radial-gradient(closest-side, var(--wp-a), transparent 72%),
-        radial-gradient(closest-side, var(--wp-b), transparent 72%),
-        radial-gradient(closest-side, var(--wp-c), transparent 72%),
-        radial-gradient(closest-side, var(--wp-d), transparent 72%);
-    background-repeat: no-repeat;
-    background-size: 62vmax 62vmax, 56vmax 56vmax, 58vmax 58vmax, 52vmax 52vmax;
+        radial-gradient(120vmax 95vmax at 12% 6%, var(--wp-a), transparent 62%),
+        radial-gradient(115vmax 90vmax at 90% 10%, var(--wp-b), transparent 62%),
+        radial-gradient(115vmax 90vmax at 92% 94%, var(--wp-d), transparent 62%),
+        radial-gradient(120vmax 95vmax at 8% 94%, var(--wp-c), transparent 62%);
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
     background-attachment: fixed, fixed, fixed, fixed;
-    background-position: -14vmax -16vmax, 108% -10vmax, 104% 108%, -10vmax 104%;
-    animation: wp-drift 90s ease-in-out infinite alternate;
-}
-
-@keyframes wp-drift {
-    from {
-        background-position: -14vmax -16vmax, 108% -10vmax, 104% 108%, -10vmax 104%;
-    }
-    to {
-        background-position: 2vmax -8vmax, 96% 0vmax, 96% 96%, 2vmax 98%;
-    }
-}
-
-@media (max-width: 768px) {
-    body:has(.home-cards) {
-        background-size: 90vmax 90vmax, 80vmax 80vmax, 84vmax 84vmax, 76vmax 76vmax;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    body:has(.home-cards) {
-        animation: none;
-    }
 }
