@@ -1,0 +1,73 @@
+/* =============================================================================
+   悬浮胶囊导航
+   -----------------------------------------------------------------------------
+   把主题 header 做成粘性玻璃胶囊。用 position: sticky（保持文档流，不与 main 重叠，
+   无需补 padding，也不必改 custom.css 里 TOC 的 top）。
+
+   不改 header.html：沿用主题 DOM（.header > .header-nav > .logo / ul#menu）及其
+   .menu .active 类（加在 <span> 上）。不得隐藏 / 遮挡 #menu（移动端靠它自身
+   overflow-x 横滚）与 #theme-toggle。
+   ========================================================================== */
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 0;
+    padding: 12px var(--gap);
+    background: color-mix(in srgb, var(--theme) 78%, transparent);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+    backdrop-filter: blur(10px) saturate(1.1);
+}
+
+.header-nav {
+    padding: 6px 18px;
+    min-height: 56px;
+    line-height: 44px;
+    column-gap: 16px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-pill);
+    box-shadow: var(--glass-shadow), var(--glass-glow);
+    -webkit-backdrop-filter: blur(8px) saturate(1.15);
+    backdrop-filter: blur(8px) saturate(1.15);
+}
+
+/* 菜单：收窄间距，让每项带内边距的胶囊不至于过宽 */
+.menu {
+    column-gap: 0.25rem;
+    padding: 0;
+}
+
+.menu a {
+    padding: 0 0.7rem;
+    border-radius: var(--r-pill);
+    transition: color 150ms ease, background 150ms ease;
+}
+
+.menu a:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.menu a:has(.active) {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+/* 压过主题 .menu .active 的下划线，改为胶囊高亮 */
+.menu .active {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 8px 12px;
+    }
+
+    .header-nav {
+        border-radius: var(--r-sm);
+        padding: 6px 12px;
+        min-height: 48px;
+        line-height: 40px;
+    }
+}

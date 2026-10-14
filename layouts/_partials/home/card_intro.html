@@ -1,0 +1,13 @@
+{{- /* 首页问候卡片：读取 hugo.yaml 的 params.homeInfoParams */ -}}
+{{- $p := .page -}}
+{{- with site.Params.homeInfoParams }}
+<article class="glass-card home-card home-card--intro" style="--card-i:{{ $.index }}">
+    <header class="entry-header">
+        <h1 class="home-card__title">{{ .Title | markdownify }}</h1>
+    </header>
+    <div class="entry-content md-content">
+        {{- $opts := dict "display" "block" }}
+        {{ .Content | $p.RenderString $opts }}
+    </div>
+</article>
+{{- end }}

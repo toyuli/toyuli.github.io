@@ -1,0 +1,41 @@
+/* =============================================================================
+   轻量流光背景（纯 CSS，无 canvas / 无 JS）
+   -----------------------------------------------------------------------------
+   直接画在首页 body 的 background-image 上并动画 background-position：
+   天然位于所有内容之下，不可能遮挡文字；也避开了 palette.css 里
+   .list{background:var(--theme)} 那层不透明底把 z-index:-1 伪元素盖住的问题。
+
+   仅作用于首页：body:has(.home-cards)——只有 layouts/index.html 产出 .home-cards。
+   暗色模式直接关闭；prefers-reduced-motion 下停止漂移。
+   ========================================================================== */
+
+body:has(.home-cards) {
+    background-image:
+        radial-gradient(closest-side, var(--blob-a), transparent 70%),
+        radial-gradient(closest-side, var(--blob-b), transparent 70%);
+    background-repeat: no-repeat, no-repeat;
+    background-size: 60vmax 60vmax, 55vmax 55vmax;
+    background-attachment: fixed, fixed;
+    background-position: -12vmax -14vmax, 108% 112%;
+    animation: blob-drift 70s ease-in-out infinite alternate;
+}
+
+@keyframes blob-drift {
+    from {
+        background-position: -12vmax -14vmax, 108% 112%;
+    }
+    to {
+        background-position: 6vmax 4vmax, 92% 96%;
+    }
+}
+
+:root[data-theme="dark"] body:has(.home-cards) {
+    background-image: none;
+    animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body:has(.home-cards) {
+        animation: none;
+    }
+}

@@ -1,0 +1,50 @@
+/* =============================================================================
+   设计令牌：暖纸质感（亮 + 暗）
+   -----------------------------------------------------------------------------
+   全部基于 palette.css 的变量派生，自动跟随明暗切换。
+   文件以 zz- 前缀命名，确保被 head.html 的 resources.Match("css/extended/*.css")
+   排在主题 core 与其它 extended 之后，同特异性下后加载者胜。
+
+   不修改 --main-width / --gap / --nav-width / --header-height / --radius：
+   custom.css 的宽屏目录侧栏几何 calc(50% + 384px + 32px) 依赖它们（AGENTS.md §7）。
+   ========================================================================== */
+
+:root {
+    /* 圆角、间距、时长 */
+    --r-card: 40px;
+    --r-card-lg: 56px;
+    --r-pill: 999px;
+    --r-sm: 16px;
+    --gutter: 36px;
+    --space: 20px;
+    --dur-entrance: 0.6s;
+
+    /* 玻璃质感：暖白底 + 柔和投影 + 内发光 */
+    --glass-bg: color-mix(in srgb, #fffdf9 58%, transparent);
+    --glass-border: color-mix(in srgb, #ffffff 65%, var(--border));
+    --glass-shadow: 0 40px 50px -32px rgb(44 38 33 / 0.10);
+    --glass-glow: inset 0 0 20px color-mix(in srgb, #ffffff 32%, transparent);
+
+    /* 流光背景引用的色团（半透明，读作柔和光晕而非实色团） */
+    --blob-a: color-mix(in srgb, var(--accent) 20%, transparent);
+    --blob-b: color-mix(in srgb, var(--tertiary) 55%, transparent);
+}
+
+@media (max-width: 768px) {
+    :root {
+        --gutter: 24px;
+        --r-card: 28px;
+        --r-card-lg: 32px;
+        --space: 16px;
+    }
+}
+
+:root[data-theme="dark"] {
+    --glass-bg: color-mix(in srgb, var(--entry) 55%, transparent);
+    --glass-border: color-mix(in srgb, #ffffff 10%, var(--border));
+    --glass-shadow: 0 40px 50px -32px rgb(0 0 0 / 0.55);
+    --glass-glow: inset 0 0 24px color-mix(in srgb, var(--accent) 6%, transparent);
+
+    --blob-a: transparent;
+    --blob-b: transparent;
+}

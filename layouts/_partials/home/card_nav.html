@@ -1,0 +1,18 @@
+{{- /* 导航 + 社交卡片 */ -}}
+{{- $p := .page -}}
+<nav class="glass-card home-card home-card--nav" style="--card-i:{{ .index }}" aria-label="快捷导航">
+    <h2 class="home-card__label">导航</h2>
+    <ul class="home-nav">
+        {{- range site.Menus.main }}
+        {{- $active := or ($p.IsMenuCurrent "main" .) ($p.HasMenuCurrent "main" .) }}
+        <li>
+            <a href="{{ .URL | absLangURL }}" class="home-nav__link{{ if $active }} is-active{{ end }}">{{ .Name }}</a>
+        </li>
+        {{- end }}
+    </ul>
+    {{- with site.Params.socialIcons }}
+    <div class="home-card__social">
+        {{ partial "social_icons.html" (dict "align" "start") }}
+    </div>
+    {{- end }}
+</nav>

@@ -1,0 +1,13 @@
+{{- define "main" }}
+{{- /* 首页卡片清单：新增卡片 = 新建 layouts/_partials/home/card_xxx.html 并追加到此 slice */ -}}
+{{- $cards := slice
+      "home/card_intro.html"
+      "home/card_nav.html"
+      "home/card_taxonomy.html"
+-}}
+<div class="home-cards">
+    {{- range $i, $card := $cards }}
+    {{- partial $card (dict "page" $ "index" $i) }}
+    {{- end }}
+</div>
+{{- end }}
