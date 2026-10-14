@@ -8,14 +8,19 @@
 
 .home-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: var(--space);
     margin: var(--gap) 0;
+    align-items: start;
 }
 
-.home-card--intro,
-.home-card--posts {
-    grid-column: 1 / -1;
+/* 首页在宽屏放宽列宽，让卡片排成多列 bento。
+   仅首页生效（只有 layouts/index.html 产出 .home-cards），
+   不触及文章页主列，故 custom.css 的 TOC 几何 calc 不受影响。 */
+@media (min-width: 1024px) {
+    main.main:has(.home-cards) {
+        max-width: calc(920px + var(--gap) * 2);
+    }
 }
 
 /* --- 玻璃原语 -------------------------------------------------------------- */
@@ -27,8 +32,8 @@
     border: 1px solid var(--glass-border);
     border-radius: var(--r-card);
     box-shadow: var(--glass-shadow), var(--glass-glow);
-    -webkit-backdrop-filter: blur(6px) saturate(1.1);
-    backdrop-filter: blur(6px) saturate(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+    backdrop-filter: blur(10px) saturate(1.2);
     opacity: 0;
     animation: card-in var(--dur-entrance) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
     animation-delay: calc(var(--card-i, 0) * 0.07s);
@@ -60,39 +65,120 @@
     }
 }
 
-/* --- 卡片内部 --------------------------------------------------------------- */
+/* --- 卡片通用 -------------------------------------------------------------- */
 
 .home-card {
     margin: 0;
 }
 
 .home-card__label {
-    margin: 0 0 0.75rem;
-    font-size: 0.8rem;
+    margin: 0 0 0.7rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--secondary);
 }
 
-.home-card--intro .entry-header h1,
-.home-card--intro .home-card__title {
-    margin: 0 0 0.5rem;
+/* --- 问候 / 首屏卡片 -------------------------------------------------------- */
+
+.home-card--intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.9rem;
+}
+
+.home-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.home-avatar {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: var(--grad-brand);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    box-shadow: 0 12px 26px -10px color-mix(in srgb, var(--accent) 75%, transparent);
+}
+
+.home-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.home-hero__name {
+    margin: 0;
+    font-size: clamp(1.75rem, 4vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.home-hero__tag {
+    margin: 0.25rem 0 0;
+    color: var(--secondary);
+    font-size: 0.95rem;
 }
 
 .home-card--intro .entry-content {
     color: var(--secondary);
     line-height: 1.7;
+    margin: 0;
 }
 
-.home-card--intro .entry-footer {
-    margin-top: 1rem;
+.home-card--intro .entry-content a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
-.home-card__social {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--glass-border);
+.home-card--intro .entry-content a:hover {
+    border-bottom-color: var(--accent);
+}
+
+/* --- 社交 App 磁贴 ---------------------------------------------------------- */
+
+.home-social .social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-social .social-icons a {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--r-tile);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    color: var(--accent);
+    transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.home-social .social-icons a:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.home-social .social-icons svg {
+    width: 20px;
+    height: 20px;
 }
 
 /* --- 导航卡片 -------------------------------------------------------------- */
@@ -103,15 +189,31 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.15rem;
 }
 
 .home-nav__link {
-    display: block;
-    padding: 0.5rem 0.85rem;
-    border-radius: var(--r-pill);
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: var(--r-sm);
     color: var(--primary);
     transition: background 150ms ease, color 150ms ease;
+}
+
+.home-nav__icon {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    color: var(--accent);
+}
+
+.home-nav__icon svg {
+    width: 19px;
+    height: 19px;
 }
 
 .home-nav__link:hover {
@@ -177,8 +279,8 @@
     background: var(--glass-bg);
     border-color: var(--glass-border);
     box-shadow: var(--glass-shadow), var(--glass-glow);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
 .archive-entry:hover .archive-entry-title {
