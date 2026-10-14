@@ -1,13 +1,17 @@
 {{- define "main" }}
-{{- /* 首页卡片清单：新增卡片 = 新建 layouts/_partials/home/card_xxx.html 并追加到此 slice */ -}}
-{{- $cards := slice
-      "home/card_intro.html"
-      "home/card_nav.html"
-      "home/card_taxonomy.html"
--}}
-<div class="home-cards">
-    {{- range $i, $card := $cards }}
-    {{- partial $card (dict "page" $ "index" $i) }}
+{{- $p := . }}
+<div class="home-min">
+    <h1 class="home-min__title">{{ site.Title }}</h1>
+    {{- with site.Params.homeInfoParams }}
+    <div class="home-min__intro md-content">
+        {{- $opts := dict "display" "block" }}
+        {{ .Content | $p.RenderString $opts }}
+    </div>
+    {{- end }}
+    {{- with site.Params.socialIcons }}
+    <div class="home-min__social">
+        {{ partial "social_icons.html" (dict "align" "start") }}
+    </div>
     {{- end }}
 </div>
 {{- end }}
